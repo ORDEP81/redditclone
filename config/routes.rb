@@ -7,9 +7,13 @@ PostitTemplate::Application.routes.draw do
   get 'register', to: 'users#new'
 
   resources :posts, except: :destroy do
+    member do
+      post 'vote' #/posts/:id/vote
+    end
+
     resources :comments, only: :create
   end
 
   resources :categories, only: [:new, :create, :show]
-  resources :users, only: [:create, :edit, :update]
+  resources :users, only: [:show, :create, :edit, :update]
 end

@@ -1,10 +1,10 @@
 class PostsController < ApplicationController
 
-  before_action :set_post, only: [:show, :edit, :update]
+  before_action :set_post, only: [:show, :edit, :update, :vote]
   before_action :require_user, except: [:index, :show]
   
   def index # posts_path , /posts, GET
-    @posts = Post.all
+    @posts = Post.all.sort_by{|x| x.total_votes}.reverse
   end
 
   def show # post_path, /post/:id, GET
@@ -40,6 +40,12 @@ class PostsController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def vote #using set_post before_action
+    Vote.create(voteable: @post, user: current_user, vote: params[:vote])
+    flash[:notice] = 'Your vote has been submitted'
+    redirect_to :back
   end
 
 private
